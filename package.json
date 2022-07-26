@@ -1,0 +1,19 @@
+{
+  "name": "hospital-management",
+  "version": "1.0.0",
+  "description": "A hospital management system with all the basic functionalities",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.4.7"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1"
+  }
+}
