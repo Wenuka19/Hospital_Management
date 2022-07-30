@@ -1,21 +1,17 @@
+const app = require('./app')
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
-const express = require('express')
-const app = express()
-const indexRouter = require('./routes/index')
-
-app.set('views', __dirname + '/views')
-app.use(express.static('public'))
-
 const mongoose = require('mongoose')
+const Patient = require('./models/patientModel')
 mongoose.connect(process.env.DATABASE_URL)
 const db = mongoose.connection
 db.on('error', error => console.error('error'))
 db.once('open', () => console.log('Connected to Mongoose'))
 
-app.use('/', indexRouter)
-
-
-app.listen(process.env.PORT || 3000)
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Listening on Port ${port}`)
+})
