@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+const validator = require('validator')
+const { default: isEmail } = require('validator/lib/isemail')
+const bcrypt = require('bcryptjs')
 
 const patientSchema = new mongoose.Schema({
     name: {
@@ -19,14 +22,14 @@ const patientSchema = new mongoose.Schema({
         required: [true, 'Contact number is compulsory']
     },
     email: {
-        type: String
+        type: String,
+        required: [true, 'User must have an email address'],
+        lowercase: true,
+        unique: true,
+        validate: [isEmail, 'Please enter a valid email']
     },
     address: {
         type: String
-    },
-    password: {
-        type: String,
-        required: [true, 'An account must have a password']
     },
     emergency_contact_name: {
         type: String,
