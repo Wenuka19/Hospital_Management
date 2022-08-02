@@ -5,10 +5,37 @@ const jwt = require('jsonwebtoken')
 const AppError = require('./../utils/appError')
 const User = require('./../models/userModel')
 const sendEmail = require('./../utils/email')
+const crypto = require('crypto')
+
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN })
 }
+
+
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+    const cookieOptions = {
+        expires: new Date(
+            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true
+    };
+    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', token, cookieOptions);
+
+    // Remove password from output
+    user.password = undefined;
+
+    res.status(statusCode).json({
+        status: 'success',
+        token,
+        data: {
+            user
+        }
+    });
+};
 
 //Seperate signup functions have to be there for patient,admin and doctor. But all login through the same function
 exports.patientSignup = catchAsync(async (req, res, next) => {
@@ -33,15 +60,7 @@ exports.patientSignup = catchAsync(async (req, res, next) => {
         role: "PATIENT"
     })
 
-    const token = signToken(newUser._id)
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            //The password also gets returned in the reponse :/
-            user: newUser
-        }
-    })
+    createSendToken(newUser, 201, res);
 })
 
 exports.adminSignup = catchAsync(async (req, res, next) => {
@@ -53,15 +72,7 @@ exports.adminSignup = catchAsync(async (req, res, next) => {
         confirm_password: req.body.confirm_password,
         role: "ADMIN"
     })
-    const token = signToken(newUser._id)
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            //The password also gets returned in the reponse :/
-            user: newUser
-        }
-    })
+    createSendToken(newUser, 201, res);
 })
 
 exports.loginUser = catchAsync(async (req, res, next) => {
@@ -74,11 +85,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
         return next(new AppError('Incorrect email or password', 401));
     }
 
-    const token = signToken(user._id)
-    res.status(200).json({
-        status: 'success',
-        token
-    })
+    createSendToken(user, 201, res);
 })
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -139,4 +146,34 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         await user.save({ validateBeforeSave: false });
         return next(new AppError('There was an error sending the email. Try again later', 500))
     }
+})
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
+    const user = await User.findOne({ passwordResetToken: hashedToken, passwordResetExpires: { $gt: Date.now() } })
+
+    if (!user) {
+        next(new AppError('Token is invalid or expired', 400))
+    }
+    user.password = req.body.password
+    user.confirm_password = req.body.confirm_password
+    user.passwordResetToken = undefined
+    user.passwordResetExpires = undefined
+    await user.save();
+
+    createSendToken(user, 201, res);
+})
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user.id).select('+password')
+    if (!(await user.correctPassword(req.body.current_password, user.password))) {
+        return next(new AppError('Your current password is incorrect', 401))
+    }
+    user.password = req.body.password
+    user.confirm_password = req.body.confirm_password
+    await user.save();
+
+    createSendToken(user, 201, res);
+
+
 })
