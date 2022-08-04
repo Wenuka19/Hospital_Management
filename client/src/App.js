@@ -1,24 +1,36 @@
-import logo from './logo.svg';
+import React, { useReducer } from'react';
+import HomePage from './views/homepage';
+import Patient from './views/patient';
 import './App.css';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { green, purple} from '@mui/material/colors';
+import { Button } from '@mui/material';
+
+const theme = createTheme({
+  components: {
+    MuiButton:{
+      styleOverrides: {
+        root: {
+          fontSize: "15px"
+        }
+      }
+    }
+  },
+  palette: {
+    primary: {
+      main: "#6495AD"
+    }
+  },
+})
 
 function App() {
+
   return (
+    <ThemeProvider theme={theme}>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Patient />
     </div>
+    </ThemeProvider>
   );
 }
 
