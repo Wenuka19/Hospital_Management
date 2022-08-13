@@ -1,21 +1,5 @@
 import { Box, Button, Grid } from "@mui/material";
-import { borderRadius, display } from "@mui/system";
-
-const StyledBox = (props) => (
-    <Box 
-        sx={{
-            bgcolor:"#f0f0f0",
-            flexGrow:1,
-            m:2,
-            p:2,
-            minHeight: '30vh',
-            textAlign: "center",
-            borderRadius: 3
-        }}
-    >
-        {props.topic}
-    </Box>
-);
+import { StyledBox } from "../StyledBox";
 
 export function PatientHome(){
     return(
@@ -25,6 +9,7 @@ export function PatientHome(){
                 flexGrow:1,
                 m:2,
                 p:2,
+                borderRadius:3,
                 height:'10%'
             }}>
                 <h2>Welcome David</h2>

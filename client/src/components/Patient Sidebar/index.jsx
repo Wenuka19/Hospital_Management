@@ -3,26 +3,36 @@ import Folder from '@mui/icons-material/Folder';
 import MonitorHeart from '@mui/icons-material/MonitorHeart';
 import Person from '@mui/icons-material/Person';
 import CalendarMonth from '@mui/icons-material/CalendarMonth';
+import MedicalServices from '@mui/icons-material/MedicalServices';
+import { Link } from "react-router-dom";
 
 export function PatientSideBar(){
     return(
-        <Box sx={{height:'100%', bgcolor:'#D5E3E5'}}>
+        <Box sx={{height: '100%', width:'300px', bgcolor:'#D5E3E5'}}>
             <List>
                 <ListItem> 
-                    <ListItemButton>
+                    <ListItem button component={Link} to="healthrecord">
                         <ListItemIcon>
                             <Folder />
                         </ListItemIcon>
                         <ListItemText primary="Health Record" />
-                    </ListItemButton>
+                    </ListItem>
                 </ListItem>
                 <ListItem> 
-                    <ListItemButton>
+                    <ListItem button component={Link} to="pres">
+                        <ListItemIcon>
+                            <MedicalServices />
+                        </ListItemIcon>
+                        <ListItemText primary="Prescriptions" />
+                    </ListItem>
+                </ListItem>
+                <ListItem> 
+                    <ListItem button component={Link} to="reports">
                         <ListItemIcon>
                             <MonitorHeart />
                         </ListItemIcon>
                         <ListItemText primary="Reports" />
-                    </ListItemButton>
+                    </ListItem>
                 </ListItem>
                 <ListItem> 
                     <ListItemButton>
@@ -33,12 +43,12 @@ export function PatientSideBar(){
                     </ListItemButton>
                 </ListItem>
                 <ListItem> 
-                    <ListItemButton>
+                    <ListItem button component={Link} to="profile">
                         <ListItemIcon>
                             <Person />
                         </ListItemIcon>
                         <ListItemText primary="Profile" />
-                    </ListItemButton>
+                    </ListItem>
                 </ListItem>
             </List>
         </Box>
