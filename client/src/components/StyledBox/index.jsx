@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 export const StyledBox = (props) => (
     <Box 
         sx={{
-            bgcolor:"#f1f1f1",
+            bgcolor:"#f0f0f0",
             flexGrow:1,
             m:2,
             p:2,
@@ -17,5 +17,8 @@ export const StyledBox = (props) => (
         }}
     >
         {props.topic}
+        <br />
+        <br />
+        {props.content}
     </Box>
 );
