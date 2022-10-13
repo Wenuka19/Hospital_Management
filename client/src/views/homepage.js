@@ -3,8 +3,10 @@ import React from "react";
 import background from "../photos/Hospital_BG.jpg";
 import logo from "../photos/Logo.svg";
 import LoginForm from "../components/Login Form";
+import { PropTypes } from "prop-types";
+import { useState } from "react";
 
-export default function HomePage() {
+export default function HomePage({ setToken }) {
   return (
     <div
       style={{
@@ -86,7 +88,7 @@ export default function HomePage() {
 
             <Grid container item xs={12} lg={6}>
               <Grid container xs={3} lg={4}></Grid>
-              <LoginForm />
+              <LoginForm setToken={setToken} />
             </Grid>
           </Grid>
         </Grid>
@@ -94,3 +96,7 @@ export default function HomePage() {
     </div>
   );
 }
+
+HomePage.propTypes = {
+  setToken: PropTypes.func.isRequired,
+};

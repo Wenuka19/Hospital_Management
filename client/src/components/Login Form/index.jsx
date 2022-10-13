@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import {
   Button,
@@ -11,6 +11,19 @@ import {
 } from "@mui/material";
 import { Formik, Form, useField } from "formik";
 import styled from "@emotion/styled";
+import { PropTypes } from "prop-types";
+
+async function loginUser(credentials) {
+  return fetch("http://localhost:3000/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST",
+    },
+    body: credentials,
+  }).then((data) => data.json());
+}
 
 const TextInput = ({ ...props }) => {
   const [field, meta] = useField(props);
@@ -37,7 +50,7 @@ const StyledErrorMessage = styled.div`
   margin-top: 0.5rem;
 `;
 
-export default function LoginForm() {
+export default function LoginForm({ setToken }) {
   return (
     <>
       <Formik
@@ -49,8 +62,12 @@ export default function LoginForm() {
             .email("Invalid email address")
             .required("Required"),
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
+        onSubmit={async (values, { setSubmitting }) => {
+          setTimeout(async () => {
+            alert(JSON.stringify(values, null, 2));
+            const token = await loginUser(JSON.stringify(values));
+            alert("Token" + JSON.stringify(token));
+            setToken(token);
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
           }, 400);
@@ -116,3 +133,7 @@ export default function LoginForm() {
     </>
   );
 }
+
+LoginForm.propTypes = {
+  setToken: PropTypes.func.isRequired,
+};
