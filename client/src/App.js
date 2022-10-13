@@ -37,8 +37,7 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="patient" element={<Patient />}>
+          <Route path="/" element={<Patient />}>
             <Route path="" element={<PatientHome />} />
             <Route path="pres" element={<PatientPrescription />} />
             <Route path="healthrecord" element={<PatientHealthRecord />} />
